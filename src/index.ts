@@ -2,8 +2,10 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
+import swaggerUi from 'swagger-ui-express'
 import meshRoutes from './routes/mesh.routes'
 import { errorHandler } from './middleware/errorHandler'
+import { swaggerSpec } from './swagger'
 
 const app  = express()
 const PORT = process.env.PORT || 3000
@@ -15,6 +17,7 @@ app.use(express.json())
 
 // ── Routes ───────────────────────────────────────────────
 app.use('/api/meshes', meshRoutes)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 

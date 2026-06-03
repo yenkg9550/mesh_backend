@@ -1,0 +1,30 @@
+# 本地開發：後端 + MongoDB 同時跑起來
+services:
+  mongo:
+    image: mongo:7
+    container_name: mesh-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: mesh-editor
+
+  server:
+    build: .
+    container_name: mesh-server
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo:27017/mesh-editor
+    depends_on:
+      - mongo
+    # 開發時直接掛 src，不需重 build
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src
+
+volumes:
+  mongo-data:
